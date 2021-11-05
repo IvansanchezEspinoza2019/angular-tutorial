@@ -59,6 +59,28 @@ addHero(hero: Hero): Observable<Hero> {
   );
 }
 
+/** DELETE: delete the hero from the server */
+deleteHero(id: number): Observable<Hero> {
+  const url = `${this.heroesUrl}/${id}`;
+
+  return this.http.delete<Hero>(url, this.httpOptions).pipe(
+    tap(_ => this.log(`deleted hero id=${id}`)),
+    catchError(this.handleError<Hero>('deleteHero'))
+  );
+}
+
+/** Search **/
+searchHeroes(key: string):Observable<Hero[]>{
+  if(!key.trim()){
+    return of([])
+  }
+  return this.http.get<Hero[]>(`${this.heroesUrl}?name=${key}`).pipe(
+    tap(result => result.length  ? 
+      this.log(`Results matched for keysearch ${key}`):
+      this.log("No matches found!"))
+    )
+}
+
 
 
   /**
